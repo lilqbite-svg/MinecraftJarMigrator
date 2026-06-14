@@ -247,3 +247,8 @@ src/main/java/com/mcmigrator/
 ## License
 
 See LICENSE file.
+
+
+## License
+
+See LICENSE file.
