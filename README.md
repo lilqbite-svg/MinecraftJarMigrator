@@ -1,4 +1,4 @@
-![Главное окно](img_preview\MinecraftJarMigrator_IHtIb5916Z.png)
+(img_preview\MinecraftJarMigrator_IHtIb5916Z.png)
 # MinecraftJarMigrator)
 
 Инструмент для миграции jar-файлов модов/плагинов Minecraft между версиями:
