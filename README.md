@@ -1,3 +1,4 @@
+![Uploading explorer_j4LrQ73plQ.png…]()
 # MinecraftJarMigrator
 
 Инструмент для миграции jar-файлов модов/плагинов Minecraft между версиями:
