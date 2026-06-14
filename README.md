@@ -3,6 +3,7 @@
 Инструмент для миграции jar-файлов модов/плагинов Minecraft между версиями:
 ![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_WG27URNpgd.png)
 ![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_IHtIb5916Z.png)
+![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/explorer_j4LrQ73plQ.png)
 ```
 inputJar → [1.5/4] BytecodeTransform (ASM)
          → [2/4] Remap (Tiny Remapper)
