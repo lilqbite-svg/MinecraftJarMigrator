@@ -1,4 +1,3 @@
-<img src="C:\Users\ilyas\Downloads\minecraft-jar-migrator\img_preview\MinecraftJarMigrator_WG27URNpgd.png" width="900" alt="Main Window">
 # MinecraftJarMigrator)
 
 Инструмент для миграции jar-файлов модов/плагинов Minecraft между версиями:
