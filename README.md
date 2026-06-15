@@ -5,6 +5,11 @@
 ![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_IHtIb5916Z.png)
 ![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/explorer_j4LrQ73plQ.png)
 ```
+# MinecraftJarMigrator
+
+Инструмент для миграции jar-файлов модов/плагинов Minecraft между версиями:
+
+```
 inputJar → [1.5/4] BytecodeTransform (ASM)
          → [2/4] Remap (Tiny Remapper)
          → [3/4] Decompile (Vineflower / CFR / Procyon)
@@ -234,7 +239,7 @@ src/main/java/com/mcmigrator/
 ├── gui/               # MigratorGui, ModAnalyzer, SourceEditorPanel
 ├── mappings/          # MappingsProvider, MappingsDownloader, MappingChain, AutoRuleGenerator
 ├── pipeline/          # MigrationPipeline, stages, config, context
-├── protection/        # ProtectionAnalyzer, ProtectionRemover
+├── protection/        # ProtectionAnalyzer (детектор обфускации/защиты)
 ├── report/            # MigrationReport, HtmlReportExporter
 ├── rules/             # VersionRuleSet, RulePluginLoader, OnlineRulesHub, CommunityRulesHub, InteractiveRuleSelector
 ├── transform/         # TransformRule, bytecode/, resources/, ArchitecturyRule
@@ -243,6 +248,26 @@ src/main/java/com/mcmigrator/
 ├── Main.java
 └── ModType.java
 ```
+
+## License
+
+Licensed under the **MIT License** — see the [LICENSE](LICENSE) file.
+
+## Responsible use
+
+This tool is intended for migrating mods/plugins **you have the right to modify**:
+your own projects, or third-party mods where the author's license permits
+modification and redistribution. Before migrating and sharing someone else's
+mod:
+
+- Check the mod's license. Many mods are *all-rights-reserved* even when the
+  source is visible — "visible" is not "freely modifiable".
+- Prefer asking the author or using an official build for the target version.
+- Respect attribution: do not strip author names, credits, or license headers
+  from migrated output.
+
+The maintainers do not endorse using this tool to circumvent technical
+protection measures or to redistribute others' work against their wishes.
 
 ## License
 
