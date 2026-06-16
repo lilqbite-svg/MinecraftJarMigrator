@@ -1,9 +1,7 @@
 # MinecraftJarMigrator
 
 Инструмент для миграции jar-файлов модов/плагинов Minecraft между версиями:
-![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_WG27URNpgd.png)
-![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_IHtIb5916Z.png)
-![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/explorer_j4LrQ73plQ.png)
+![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_g9o6QPjMMl.png)
 ```
 # MinecraftJarMigrator
 
