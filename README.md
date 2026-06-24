@@ -1,5 +1,5 @@
 ![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_g9o6QPjMMl.png)
-![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/MinecraftJarMigrator_Xu4ydaa3KZ.png)
+![GUI](https://github.com/lilqbite-svg/MinecraftJarMigrator/blob/main/ShareX_cyAIzkXpjB.png)
 ```
 # MinecraftJarMigrator
 
