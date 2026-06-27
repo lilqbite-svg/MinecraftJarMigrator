@@ -331,7 +331,7 @@ src/main/java/com/mcmigrator/
 | AutoComplete | 3.3.1 | Автодополнение в редакторе |
 | LanguageSupport | 3.3.0 | Java-парсер для подсказок/ошибок |
 | ASM | 9.9.1 | Байткод трансформации |
-| JUnit 5 | 6.1.0 | Тесты |
+| JUnit 6 | 6.1.0 | Тесты |
 
 ---
 
