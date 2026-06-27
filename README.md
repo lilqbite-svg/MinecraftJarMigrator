@@ -9,8 +9,6 @@ input.jar → BytecodeTransform (ASM) → Remap (Tiny Remapper) → Decompile �
 Поддерживает 6 загрузчиков: **Fabric**, **Forge**, **NeoForge**, **Quilt**, **Paper**, **Spigot**.
 Мигрирует с версий **1.14.4** до **26.1.2** через **861 набор JSON-правил** для 42 релизов.
 
-> Список изменений последней версии — в [CHANGELOG.md](CHANGELOG.md).
-
 ---
 
 ## Быстрый старт
