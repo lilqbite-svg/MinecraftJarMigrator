@@ -7,7 +7,7 @@ input.jar → BytecodeTransform (ASM) → Remap (Tiny Remapper) → Decompile �
 ```
 
 Поддерживает 6 загрузчиков: **Fabric**, **Forge**, **NeoForge**, **Quilt**, **Paper**, **Spigot**.
-Мигрирует с версий **1.14.4** до **26.1.2** через **861 набор JSON-правил** для 42 релизов.
+Мигрирует с версий **1.14.4** до **26.2** через **903 набора JSON-правил** для 42 релизов.
 
 ---
 
@@ -60,8 +60,8 @@ build-exe.bat
 | Этап | Описание |
 |---|---|
 | **1. Bytecode Transform** | ASM-трансформации: RefmapPatcher (ремап `*-refmap.json`), MixinConfigPatcher (`compatibilityLevel`), AccessWidenerPatcher (`.accesswidener`) |
-| **2. Remap** | Tiny Remapper — переименование классов/методов/полей через цепочку `named_old → obf → named_new` (MojMap) |
-| **3. Decompile** | Декомпиляция байткода в Java-исходники (Vineflower / CFR / Procyon) |
+| **2. Remap** | Tiny Remapper — переименование классов/методов/полей через цепочку `named_old → obf → named_new` (MojMap); поверх — Parchment-имена параметров и javadoc |
+| **3. Decompile** | Декомпиляция байткода в Java-исходники (Vineflower / CFR / Procyon / Авто A/B-подбор) |
 | **4. Transform** | AST-трансформации через JavaParser + JSON-правила: переименование методов, классов, перенос пакетов |
 | **5. Compile** | Рекомпиляция через `javax.tools`. Поблочный фоллбэк: при неудаче пакетной компиляции каждый файл компилируется отдельно |
 
@@ -78,20 +78,24 @@ build-exe.bat
 - **Drag & Drop** — перетащите .jar для автоматического анализа
 - **Авто-анализ** — определяет загрузчик (Fabric/Forge/NeoForge/Quilt/Paper/Spigot), версию MC, метаданные мода
 - **Информация о моде** — название, ID, версия, MC, загрузчик, авторы, лицензия, описание, библиотеки
-- **Выбор декомпилятора** — Vineflower (рекомендуется), CFR, Procyon
+- **Выбор декомпилятора** — Vineflower (рекомендуется), CFR, Procyon, **Авто** (A/B-подбор: пробует декомпиляторы на выборке и выбирает с меньшим числом ошибок)
 - **Кэш декомпиляции** — SHA-256 кэш в `~/.mcmigrator/decompile-cache/`
-- **Прогресс-бары** — поэтапный прогресс для каждого этапа пайплайна
+- **Прогресс-бары** — поэтапный прогресс, включая счётчик классов внутри декомпиляции
+- **Итоговый экран** — крупный вердикт **GO / RISKY / NO-GO** (confidence 0–100) + вердикт запуска `loads: yes/no` и кнопки действий
+- **Матрица версий** — раскрашенная шкала целевых версий (зелёный/жёлтый/красный) с ценой прыжка ещё до запуска
 - **Темы** — светлая и тёмная (FlatLaf), переключение кнопкой
 - **Масштаб** — кнопки A−/A+ для изменения размера шрифта
-- **Профили настроек** — сохранение/загрузка конфигураций миграции
-- **История миграций** — журнал всех запусков с возможностью повтора
-- **Встроенный редактор кода** — просмотр и правка декомпилированных исходников с подсветкой синтаксиса (RSyntaxTextArea), перекомпиляция в jar
+- **Профили настроек** — сохранение/загрузка конфигураций; поля формы автосохраняются между запусками
+- **История миграций** — журнал всех запусков с повтором и сравнением confidence «было/стало»
+- **Командная палитра** — Ctrl+K, быстрый доступ ко всем действиям
+- **Встроенный редактор кода** — просмотр и правка декомпилированных исходников с подсветкой синтаксиса (RSyntaxTextArea), quick-fix по Alt+Enter, перекомпиляция в jar
 
 ### Вкладки
 
 | Вкладка | Описание |
 |---|---|
 | **Журнал** | Живой лог миграции с кнопкой копирования |
+| **Smoke-тест** | Вердикт `loads: yes/no` и лог запуска сервера (при `--verify`) |
 | **Отчёт** | Фильтруемый отчёт: трансформации, ручные правки, предупреждения |
 | **Изменения (diff)** | Unified diff для каждого изменённого файла |
 | **Совместимость** | Матрица совместимости, рекомендации, заметки |
@@ -107,10 +111,12 @@ build-exe.bat
 | **Мигрировать** | Запуск полного пайплайна миграции |
 | **Проверить Mixin'ы** | Верификация mixin-целей против jar целевой версии |
 | **Проверить jar** | Preflight-проверка входного jar |
+| **Что изменится?** | Быстрый предпросмотр без декомпиляции: сколько классов затронется и сколько правил сработает |
 | **Анализ защиты** | Сканирование JAR на 78 типов обфускации и защиты |
 | **Снять защиту** | Автоматическое удаление обнаруженных защитных механизмов (реализованно удаление 52 типов из 78)|
 | **Smoke-test** | Генерация тестового скрипта для Fabric-сервера |
-| **Пакетно** | Пакетная миграция всех jar из папки |
+| **Пакетно** | Пакетная миграция всех jar из папки (сводный HTML: jar × confidence × loads) |
+| **Обновить модпак** | Скан папки/`.mrpack`: для каждого мода — скачать готовый релиз под целевую версию или мигрировать |
 | **История** | Просмотр и повтор предыдущих миграций |
 | **Редактировать код** | Встроенный редактор декомпилированных исходников |
 | **Копировать журнал** | Копирование лога в буфер обмена |
@@ -126,7 +132,8 @@ build-exe.bat
 | `--from` | Исходная версия MC, напр. `1.20.3` (обязательно) |
 | `--to` | Целевая версия MC, напр. `1.21.1` (обязательно) |
 | `--type` | `fabric` / `forge` / `neoforge` / `paper` / `spigot` / `quilt` (по умолчанию: `paper`) |
-| `--decompiler` | `VINEFLOWER` / `CFR` / `PROCYON` (по умолчанию: `VINEFLOWER`) |
+| `--decompiler` | `VINEFLOWER` / `CFR` / `PROCYON` / `AUTO` (A/B-подбор; по умолчанию: `VINEFLOWER`) |
+| `--verify` | После миграции поднять headless-сервер с мод-jar и получить вердикт `loads: yes/no` (Fabric/Quilt/Paper/Forge/NeoForge) |
 | `--no-decompile-cache` | Отключить кэширование декомпиляции |
 | `--parallel` | Параллельная декомпиляция (только Vineflower) |
 | `--interactive` | Интерактивный выбор breaking-правил перед миграцией |
@@ -150,7 +157,7 @@ build-exe.bat
 
 ### Как цель (to)
 
-42 версии: от **1.14.4** до **26.1.2**
+43 версии: от **1.14.4** до **26.2**
 
 ### Версии Java
 
@@ -158,14 +165,14 @@ build-exe.bat
 |---|---|---|
 | 1.14.4 – 1.20.4 | Java 17 | Стандарт |
 | 1.20.5 – 1.21.x | Java 21 | Data components |
-| 26.1+ | Java 26 | Year.drop нумерация |
+| 26.1+ (вкл. 26.2) | Java 25 | Year.drop нумерация |
 
 ---
 
 ## JSON-правила
 
 Правила для пар версий: `src/main/resources/rules/{from}-to-{to}.json`.
-**861 набор** для 42 релизов. Генерация: `python3 tools/generate_rules.py`.
+**903 набора** для 43 релизов. Генерация: `python3 tools/generate_rules.py`.
 
 ```json
 {
@@ -195,6 +202,9 @@ build-exe.bat
 | **MixinPortSuggester** | Предлагает кандидатов-замены для сломанных mixin-целей |
 | **DependencyChecker** | Валидирует зависимости из `fabric.mod.json`, `mods.toml`, `plugin.yml` |
 | **ComplexityAnalyzer** | Оценка сложности миграции: TRIVIAL → EASY → MEDIUM → HARD → MANUAL |
+| **MigrationPreview** | «Что изменится?» без декомпиляции: скан constant pool × правила пары |
+| **VersionCoverage** | Мгновенная (офлайн) оценка цены прыжка для матрицы версий |
+| **MigrationConfidence** | Агрегат сигналов в один балл 0–100 + go/no-go |
 | **PostMigrationChecker** | ASM-верификация всех ссылок на классы/методы/поля |
 | **PreflightChecker** | Предварительная проверка jar: дескрипторы, классы, исходники, вложенные jar |
 | **CompatibilityAdvisor** | Матрица совместимости и рекомендации |
@@ -272,8 +282,16 @@ ProtectionRemover выполняет:
 
 ## Дополнительные возможности
 
+- **Верификация запуском (`--verify`)** — после миграции поднимает headless-сервер целевой версии с мод-jar и даёт бинарный вердикт `loads: yes/no` (Fabric/Quilt/Paper готовым сервером, Forge/NeoForge через installer `--installServer`)
+- **Migration confidence score** — один агрегат 0–100 + GO/RISKY/NO-GO + топ-3 действия, сведённый из match-rate, сложности, битых ссылок, mixin/зависимостей и вердикта smoke-теста
+- **Parchment-имена параметров** — поверх MojMap подмешиваются имена параметров и javadoc: декомпилированный код читается без `var3/var4` (отключить: `-Dmcmigrator.parchment=false`)
+- **Модпак-режим** — папка модов или `.mrpack`: по хешу каждого мода определяет, есть ли официальный релиз под целевую версию (скачать) или нужна миграция
+- **A/B-подбор декомпилятора** — режим `AUTO`: пробует Vineflower и CFR на выборке крупнейших классов, выбирает с меньшим числом ошибок компиляции
+- **Обучение правил** — из диффа символов успешных миграций авто-предлагает переименования для пар версий с бедным набором правил (модерация рейтингом community)
+- **Оффлайн-префетч** — скачать MojMap + Parchment + intermediary пары версий заранее, чтобы миграция прошла без интернета
+- **Докат каскада** — после падения каскад продолжается с незавершённого шага (готовые промежуточные jar переиспользуются)
 - **Каскадная миграция** — большие переходы идут через промежуточные версии
-- **Пакетный режим** — миграция всех jar из папки со сводной таблицей
+- **Пакетный режим** — миграция всех jar из папки со сводной таблицей (HTML: jar × confidence × loads)
 - **Интерактивный выбор правил** — диалог включения/отключения breaking-проверок
 - **Git интеграция** — автокоммит на ветке `migrate-{from}-to-{to}`
 - **Онлайн-правила** — загрузка свежих правил с GitHub без пересборки
@@ -281,17 +299,18 @@ ProtectionRemover выполняет:
 - **Data pack правила** — трансформации рецептов, тегов, таблиц лута
 - **Asset правила** — трансформации `sounds.json`, моделей блоков, атласов, шрифтов
 - **Architectury поддержка** — детекция `@ExpectPlatform`, `@PlatformOnly`
-- **Modrinth API** — автоскачивание Fabric API и зависимостей по ID мода
+- **Modrinth + CurseForge API** — автоскачивание Fabric API и зависимостей по ID мода (CurseForge — как fallback, когда на Modrinth сборки нет)
 - **Телеметрия** — opt-in анонимная статистика миграций
 - **Экспорт отчётов** — TXT, HTML, Markdown
 - **Smoke-test** — генерация скрипта для проверки мода на Fabric-сервере
 - **Визуальный diff jar** — сравнение двух jar (добавленные/удалённые/изменённые классы)
 - **Экспорт патчей** — генерация `.patch` файлов из diff миграции
 - **I18n** — русский и английский интерфейс
+- **LLM-починка ошибок компиляции** (opt-in) — остаточные ошибки `javac` (API-breaking без JSON-правил) чинятся моделью Claude; включается `-Dmcmigrator.llmFix=true` + переменной `ANTHROPIC_API_KEY`
 
 ---
 
-## Архитектура (v4.0)
+## Архитектура (v4.5)
 
 Код организован в чистую слоистую архитектуру с однонаправленными зависимостями:
 
@@ -326,7 +345,8 @@ src/main/java/com/mcmigrator/
 │   ├── UiKit, SystemTheme, PipelineStepBar, SwingLogAppender
 │   ├── panel/             # вкладки: InsightsPanel, ProtectionPanel, ProtectionTableModel, PanelHost
 │   ├── format/            # чистые форматтеры: InsightFormatter, ProtectionFormatter
-│   ├── dialog/            # модальные диалоги: HistoryDialog, InfoDialogs
+│   ├── dialog/            # модальные диалоги: HistoryDialog, InfoDialogs, FixupDialog,
+│   │                      # VersionMatrixDialog, ModpackDialog
 │   └── editor/            # редактор/браузер кода: CodeBrowserWindow, SourceEditorPanel, JarRecompiler
 │
 ├── application/       # Слой ПРИЛОЖЕНИЯ — фасады, единая точка входа в движок (GUI и CLI)
@@ -334,28 +354,33 @@ src/main/java/com/mcmigrator/
 │
 ├── pipeline/          # Оркестрация стадий миграции
 │   └── MigrationPipeline, RemapStage, BytecodeTransformStage, DecompileStage, TransformStage,
-│       CompileStage, CascadeMigration, BatchMigration, MigrationConfig, PipelineContext, …
+│       CompileStage, CascadeMigration, BatchMigration, MigrationConfig, PipelineContext,
+│       MigrationOutcome, …
+│
+├── modpack/           # Модпак-режим: ModpackScanner (папка/.mrpack → скачать/мигрировать)
 │
 ├── analysis/          # Анализ мода (domain)
 │   ├── mod/               # ModAnalyzer, LibraryCatalog, PreflightChecker, CompatibilityAdvisor
 │   ├── mixin/             # MixinAnalyzer, MixinPortSuggester
-│   └── checks/            # ComplexityAnalyzer, DependencyChecker, PostMigrationChecker
+│   └── checks/            # ComplexityAnalyzer, DependencyChecker, PostMigrationChecker,
+│                          # MigrationPreview, VersionCoverage, FixupResolver
 │
 ├── transform/         # TransformRule, MethodRenameRule, ClassRenameRule, PackageChangeRule,
 │   │                  # ApiBreakingChangeRule, ArchitecturyRule, TransformContext
 │   ├── bytecode/         # AccessWidenerPatcher, MixinConfigPatcher, RefmapPatcher
 │   └── resources/        # AssetTransformer, DataPackTransformer, ResourcePatcher, FabricMetadataPatcher
 │
-├── mappings/          # MappingsProvider, MappingsDownloader, MappingChain, AutoRuleGenerator
-├── classpath/         # ClasspathProvider, ModrinthResolver, AccessWidenerApplier
-├── decompiler/        # DecompilerProvider, DecompilerType, ParallelDecompiler, DecompilerPluginLoader
+├── mappings/          # MappingsProvider, MappingsDownloader, MappingChain, ParchmentProvider, AutoRuleGenerator
+├── classpath/         # ClasspathProvider, ModrinthResolver, CurseForgeResolver, AccessWidenerApplier
+├── decompiler/        # DecompilerProvider, DecompilerType, DecompilerSelector (A/B), ParallelDecompiler, DecompilerPluginLoader
 ├── protection/        # ProtectionAnalyzer, ProtectionRemover, ProtectionFeatureScanner
-├── report/            # MigrationReport, HtmlReportExporter
+├── report/            # MigrationReport, HtmlReportExporter, MigrationConfidence
 ├── rules/             # VersionRuleSet, RulePluginLoader, OnlineRulesHub, CommunityRulesHub,
-│                      # InteractiveRuleSelector, RuleUpdater
+│                      # InteractiveRuleSelector, RuleUpdater, RuleLearner
 ├── io/                # JarUtil, JarDiffUtil, DiffUtil, TempDirManager
 ├── infra/             # Telemetry, MigrationHistory, SettingsProfiles, UiPrefs
-├── integration/       # GitIntegrator, SmokeTestRunner, TestServerScriptGenerator
+├── integration/       # GitIntegrator, SmokeTestRunner, ServerSmokeVerifier, TestServerScriptGenerator
+├── llm/               # LlmClient, LlmCompileFixer (опц. LLM-починка ошибок компиляции)
 ├── i18n/              # I18n
 ├── version/           # MinecraftVersionSupport
 ├── common/            # Throwables
