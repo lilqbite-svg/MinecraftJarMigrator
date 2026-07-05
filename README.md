@@ -172,7 +172,7 @@ build-exe.bat
 ## JSON-правила
 
 Правила для пар версий: `src/main/resources/rules/{from}-to-{to}.json`.
-**903 набора** для 43 релизов. Генерация: `python3 tools/generate_rules.py`.
+**903 набора** для 42 релизов. Генерация: `python3 tools/generate_rules.py`.
 
 ```json
 {
